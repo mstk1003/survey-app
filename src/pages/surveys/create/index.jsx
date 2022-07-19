@@ -169,28 +169,47 @@ function CreateQuestion({ addQuestion }) {
           </MenuItem>
         </Select>
       </div>
-      {/* TODO 選択肢追加ボタン */}
       <div style={{ marginTop: "16px" }}>
-        {(question.type === 3 || question.type === 4) &&
-          question.options.map((item, idx) => {
-            return (
-              <div key={idx} style={{ display: "flex", alignItems: "center" }}>
-                {question.type === 3 && <RadioButtonCheckedIcon />}
-                {question.type === 4 && <CheckBoxIcon />}
-                <TextField
-                  sx={{ width: "100%", marginLeft: "8px" }}
-                  variant="filled"
-                  hiddenLabel
-                  value={item}
-                  size="small"
-                  onChange={(e) => {
-                    copiedOptions[idx] = e.target.value;
-                    setQuestion({ ...question, options: copiedOptions });
+        {(question.type === 3 || question.type === 4) && (
+          <div style={{ marginTop: "32px" }}>
+            {question.options.map((item, idx) => {
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginTop: "16px",
                   }}
-                ></TextField>
-              </div>
-            );
-          })}
+                >
+                  {question.type === 3 && <RadioButtonCheckedIcon />}
+                  {question.type === 4 && <CheckBoxIcon />}
+                  <TextField
+                    sx={{ width: "100%", marginLeft: "8px" }}
+                    variant="filled"
+                    hiddenLabel
+                    value={item}
+                    size="small"
+                    onChange={(e) => {
+                      copiedOptions[idx] = e.target.value;
+                      setQuestion({ ...question, options: copiedOptions });
+                    }}
+                  ></TextField>
+                </div>
+              );
+            })}
+            <Button
+              variant="outlined"
+              sx={{ marginTop: "32px", marginLeft: "32px" }}
+              onClick={(e) => {
+                copiedOptions.push("");
+                setQuestion({ ...question, options: copiedOptions });
+              }}
+            >
+              選択肢を追加
+            </Button>
+          </div>
+        )}
       </div>
     </>
   );
