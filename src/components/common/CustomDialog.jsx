@@ -13,12 +13,7 @@ function CustomDialog({ isOpened, handleClose, title, children }) {
   // const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
-    <Dialog
-      // fullScreen={fullScreen}
-      // sx={{ width: "800px" }}
-      fullWidth
-      open={isOpened}
-    >
+    <Dialog fullWidth open={isOpened}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>
       <DialogActions>

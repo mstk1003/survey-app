@@ -78,9 +78,6 @@ function SurveyCreate() {
         sx={{ marginTop: "32px" }}
         onChange={(e) => setModel({ ...model, description: e.target.value })}
       />
-      <div style={{ marginTop: "32px" }}>
-        <CreateQuestion></CreateQuestion>
-      </div>
       <Button
         sx={{ width: "180px", marginTop: "16px" }}
         variant="outlined"
@@ -107,7 +104,9 @@ function SurveyCreate() {
         title="質問を追加する"
         isOpened={isOpenedDialog}
         handleClose={closeDialog}
-      ></CustomDialog>
+      >
+        <CreateQuestion></CreateQuestion>
+      </CustomDialog>
     </>
   );
 }
@@ -115,21 +114,32 @@ function SurveyCreate() {
 function CreateQuestion({ addQuestion }) {
   const [question, setQuestion] = useState({
     name: "",
-    type: 0,
-    options: [],
+    type: 1,
+    options: ["a", "b"],
   });
+
+  const copiedOptions = question.options;
+
   return (
     <>
       <div style={{ display: "flex" }}>
         <TextField
           sx={{ flex: "1" }}
+          placeholder="質問内容"
           variant="filled"
           hiddenLabel
-          onChange={(e) => setQuestion({ ...question, name: e.target.value })}
+          size="small"
+          onChange={(e) => {
+            console.log("change");
+            setQuestion({ ...question, name: e.target.value });
+          }}
         ></TextField>
         <Select
           sx={{ width: "300px", marginLeft: "16px" }}
+          placeholder="質問のタイプ"
           variant="standard"
+          size="small"
+          value={question.type}
           onChange={(e) => setQuestion({ ...question, type: e.target.value })}
         >
           {/* TODO typeをどこかで管理する */}
@@ -159,25 +169,28 @@ function CreateQuestion({ addQuestion }) {
           </MenuItem>
         </Select>
       </div>
+      {/* TODO 選択肢追加ボタン */}
       <div style={{ marginTop: "16px" }}>
-        {question.type === 1 && (
-          <TextField
-            sx={{ width: "100%" }}
-            variant="filled"
-            hiddenLabel
-            onChange={(e) => setQuestion({ ...question, name: e.target.value })}
-          ></TextField>
-        )}
-        {question.type === 2 && (
-          <TextField
-            sx={{ width: "100%" }}
-            variant="filled"
-            hiddenLabel
-            multiline
-            rows={3}
-            onChange={(e) => setQuestion({ ...question, name: e.target.value })}
-          ></TextField>
-        )}
+        {(question.type === 3 || question.type === 4) &&
+          question.options.map((item, idx) => {
+            return (
+              <div key={idx} style={{ display: "flex", alignItems: "center" }}>
+                {question.type === 3 && <RadioButtonCheckedIcon />}
+                {question.type === 4 && <CheckBoxIcon />}
+                <TextField
+                  sx={{ width: "100%", marginLeft: "8px" }}
+                  variant="filled"
+                  hiddenLabel
+                  value={item}
+                  size="small"
+                  onChange={(e) => {
+                    copiedOptions[idx] = e.target.value;
+                    setQuestion({ ...question, options: copiedOptions });
+                  }}
+                ></TextField>
+              </div>
+            );
+          })}
       </div>
     </>
   );
