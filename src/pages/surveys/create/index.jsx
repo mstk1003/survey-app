@@ -1,13 +1,22 @@
-import { Box, Button, MenuItem, Select, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { db } from "../../../plugins/firebase";
+import { db } from "firebase.js";
 import NotesIcon from "@mui/icons-material/Notes";
 import SubjectIcon from "@mui/icons-material/Subject";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import CustomDialog from "../../../components/common/CustomDialog";
+import CustomDialog from "components/common/CustomDialog";
+import { CONST } from "const";
+import { Clear, PhotoCamera } from "@mui/icons-material";
 
 function SurveyCreate() {
   let navigate = useNavigate();
@@ -114,8 +123,8 @@ function SurveyCreate() {
 function CreateQuestion({ addQuestion }) {
   const [question, setQuestion] = useState({
     name: "",
-    type: 1,
-    options: ["a", "b"],
+    type: CONST.QUESTION_TYPE.SingleLine,
+    options: [""],
   });
 
   const copiedOptions = question.options;
@@ -135,7 +144,7 @@ function CreateQuestion({ addQuestion }) {
           }}
         ></TextField>
         <Select
-          sx={{ width: "300px", marginLeft: "16px" }}
+          sx={{ width: "200px", marginLeft: "16px" }}
           placeholder="質問のタイプ"
           variant="standard"
           size="small"
@@ -143,25 +152,25 @@ function CreateQuestion({ addQuestion }) {
           onChange={(e) => setQuestion({ ...question, type: e.target.value })}
         >
           {/* TODO typeをどこかで管理する */}
-          <MenuItem value={1}>
+          <MenuItem value={CONST.QUESTION_TYPE.SingleLine}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <NotesIcon />
               <span style={{ marginLeft: "8px" }}>テキスト（１行）</span>
             </div>
           </MenuItem>
-          <MenuItem value={2}>
+          <MenuItem value={CONST.QUESTION_TYPE.MultiLine}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <SubjectIcon />
               <span style={{ marginLeft: "8px" }}>テキスト（複数行）</span>
             </div>
           </MenuItem>
-          <MenuItem value={3}>
+          <MenuItem value={CONST.QUESTION_TYPE.SingleSelect}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <RadioButtonCheckedIcon />
               <span style={{ marginLeft: "8px" }}>単一選択</span>
             </div>
           </MenuItem>
-          <MenuItem value={4}>
+          <MenuItem value={CONST.QUESTION_TYPE.MultiSelect}>
             <div style={{ display: "flex", alignItems: "center" }}>
               <CheckBoxIcon />
               <span style={{ marginLeft: "8px" }}>複数選択</span>
@@ -170,7 +179,8 @@ function CreateQuestion({ addQuestion }) {
         </Select>
       </div>
       <div style={{ marginTop: "16px" }}>
-        {(question.type === 3 || question.type === 4) && (
+        {(question.type === CONST.QUESTION_TYPE.SingleSelect ||
+          question.type === CONST.QUESTION_TYPE.MultiSelect) && (
           <div style={{ marginTop: "32px" }}>
             {question.options.map((item, idx) => {
               return (
@@ -182,8 +192,12 @@ function CreateQuestion({ addQuestion }) {
                     marginTop: "16px",
                   }}
                 >
-                  {question.type === 3 && <RadioButtonCheckedIcon />}
-                  {question.type === 4 && <CheckBoxIcon />}
+                  {question.type === CONST.QUESTION_TYPE.SingleSelect && (
+                    <RadioButtonCheckedIcon />
+                  )}
+                  {question.type === CONST.QUESTION_TYPE.MultiSelect && (
+                    <CheckBoxIcon />
+                  )}
                   <TextField
                     sx={{ width: "100%", marginLeft: "8px" }}
                     variant="filled"
@@ -195,6 +209,19 @@ function CreateQuestion({ addQuestion }) {
                       setQuestion({ ...question, options: copiedOptions });
                     }}
                   ></TextField>
+                  <IconButton
+                    color="primary"
+                    aria-label="upload picture"
+                    component="label"
+                    sx={{ marginLeft: "8px" }}
+                    disabled={question.options.length <= 1}
+                    onClick={() => {
+                      copiedOptions.splice(idx, 1);
+                      setQuestion({ ...question, options: copiedOptions });
+                    }}
+                  >
+                    <Clear />
+                  </IconButton>
                 </div>
               );
             })}
