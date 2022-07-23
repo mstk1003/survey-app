@@ -16,7 +16,7 @@ import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CustomDialog from "components/common/CustomDialog";
 import { CONST } from "const";
-import { Clear, PhotoCamera } from "@mui/icons-material";
+import { Clear } from "@mui/icons-material";
 
 function SurveyCreate() {
   let navigate = useNavigate();

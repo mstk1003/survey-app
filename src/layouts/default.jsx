@@ -8,8 +8,6 @@ function DefaultLayout({ drawerWidth, children }) {
     <Box
       sx={{
         width,
-        // maxWidth: "1200px",
-        // marginX: "auto",
         marginLeft: "auto",
         padding: "32px",
         boxSizing: "border-box",
