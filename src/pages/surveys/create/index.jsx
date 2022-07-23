@@ -33,6 +33,29 @@ function SurveyCreate() {
 
   const [isOpenedDialog, setIsOpenedDialog] = useState(false);
 
+  const [editedQuestion, setEditedQuestion] = useState({
+    name: "",
+    type: CONST.QUESTION_TYPE.SingleLine,
+    options: [""],
+  });
+
+  const editQuestion = (prop) => {
+    setEditedQuestion({ ...editedQuestion, prop });
+  };
+
+  const addQuestion = () => {
+    const copiedQuestions = model.questions;
+    copiedQuestions.push(editedQuestion);
+    setModel({ ...model, questions: copiedQuestions });
+
+    // 初期化する
+    setEditedQuestion({
+      name: "",
+      type: CONST.QUESTION_TYPE.SingleLine,
+      options: [""],
+    });
+  };
+
   const openDialog = () => {
     setIsOpenedDialog(true);
   };
@@ -87,6 +110,9 @@ function SurveyCreate() {
         sx={{ marginTop: "32px" }}
         onChange={(e) => setModel({ ...model, description: e.target.value })}
       />
+      {model.questions.map((question) => {
+        return <div>{question.name}</div>;
+      })}
       <Button
         sx={{ width: "180px", marginTop: "16px" }}
         variant="outlined"
@@ -113,21 +139,19 @@ function SurveyCreate() {
         title="質問を追加する"
         isOpened={isOpenedDialog}
         handleClose={closeDialog}
+        handleExecute={addQuestion}
       >
-        <CreateQuestion></CreateQuestion>
+        <CreateQuestion
+          editedQuestion={editedQuestion}
+          editQuestion={editQuestion}
+        ></CreateQuestion>
       </CustomDialog>
     </>
   );
 }
 
-function CreateQuestion({ addQuestion }) {
-  const [question, setQuestion] = useState({
-    name: "",
-    type: CONST.QUESTION_TYPE.SingleLine,
-    options: [""],
-  });
-
-  const copiedOptions = question.options;
+function CreateQuestion({ editedQuestion, editQuestion }) {
+  const question = editedQuestion;
 
   return (
     <>
@@ -139,8 +163,8 @@ function CreateQuestion({ addQuestion }) {
           hiddenLabel
           size="small"
           onChange={(e) => {
-            console.log("change");
-            setQuestion({ ...question, name: e.target.value });
+            question.name = e.target.value;
+            editQuestion({ name: question.name });
           }}
         ></TextField>
         <Select
@@ -149,7 +173,10 @@ function CreateQuestion({ addQuestion }) {
           variant="standard"
           size="small"
           value={question.type}
-          onChange={(e) => setQuestion({ ...question, type: e.target.value })}
+          onChange={(e) => {
+            question.type = e.target.value;
+            editQuestion({ type: question.type });
+          }}
         >
           {/* TODO typeをどこかで管理する */}
           <MenuItem value={CONST.QUESTION_TYPE.SingleLine}>
@@ -205,8 +232,8 @@ function CreateQuestion({ addQuestion }) {
                     value={item}
                     size="small"
                     onChange={(e) => {
-                      copiedOptions[idx] = e.target.value;
-                      setQuestion({ ...question, options: copiedOptions });
+                      question.options[idx] = e.target.value;
+                      editQuestion({ options: question.options });
                     }}
                   ></TextField>
                   <IconButton
@@ -216,8 +243,8 @@ function CreateQuestion({ addQuestion }) {
                     sx={{ marginLeft: "8px" }}
                     disabled={question.options.length <= 1}
                     onClick={() => {
-                      copiedOptions.splice(idx, 1);
-                      setQuestion({ ...question, options: copiedOptions });
+                      question.splice(idx, 1);
+                      editQuestion({ options: question.options });
                     }}
                   >
                     <Clear />
@@ -229,8 +256,8 @@ function CreateQuestion({ addQuestion }) {
               variant="outlined"
               sx={{ marginTop: "32px", marginLeft: "32px" }}
               onClick={(e) => {
-                copiedOptions.push("");
-                setQuestion({ ...question, options: copiedOptions });
+                question.options.push("");
+                editQuestion({ options: question.options });
               }}
             >
               選択肢を追加
