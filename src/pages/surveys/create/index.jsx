@@ -99,6 +99,7 @@ function SurveyCreate() {
         sx={{ marginTop: "32px" }}
         onChange={(e) => setModel({ ...model, description: e.target.value })}
       />
+      {/* TODO 質問表示 */}
       {model.questions.map((question) => {
         return <div>{question.name}</div>;
       })}
