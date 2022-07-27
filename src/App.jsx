@@ -8,40 +8,36 @@ import Surveys from "./pages/surveys";
 import SurveyCreate from "./pages/surveys/create";
 import DefaultLayout from "./layouts/default";
 
-const drawerMaxWidth = 270;
-const drawerMinWidth = 50;
-
 function App() {
-  const [drawerOpened, setOpenDrawer] = useState(true);
-  const [drawerWidth, setDrawerWidth] = useState(drawerMaxWidth);
-
-  function openDrawer() {
-    setOpenDrawer(true);
-    setDrawerWidth(drawerMaxWidth);
-    console.log("open");
-  }
-
-  function closeDrawer() {
-    setOpenDrawer(false);
-    setDrawerWidth(drawerMinWidth);
-    console.log("close");
-  }
   return (
     <div className="App">
-      <CustomDrawer
-        drawerWidth={drawerWidth}
-        drawerOpened={drawerOpened}
-        openDrawer={openDrawer}
-        closeDrawer={closeDrawer}
-      ></CustomDrawer>
-      <DefaultLayout drawerWidth={drawerWidth}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/surveys" element={<Surveys />} />
-          <Route path="/surveys/create" element={<SurveyCreate />} />
-        </Routes>
-      </DefaultLayout>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <DefaultLayout>
+              <Home />
+            </DefaultLayout>
+          }
+        />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route
+          path="/surveys"
+          element={
+            <DefaultLayout>
+              <Surveys />
+            </DefaultLayout>
+          }
+        />
+        <Route
+          path="/surveys/create"
+          element={
+            <DefaultLayout>
+              <SurveyCreate />
+            </DefaultLayout>
+          }
+        />
+      </Routes>
     </div>
   );
 }
